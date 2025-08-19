@@ -2,38 +2,61 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Fun Survey </title>
+  <title>Game-Style Survey </title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #fff3e6, #e6f7ff);
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       margin: 0;
+      overflow: hidden;
     }
 
-    .survey-box {
+    .app-box {
       background: white;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-      max-width: 600px;
+      padding: 25px;
+      border-radius: 25px;
+      box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+      max-width: 500px;
       width: 90%;
-      text-align: center;
+      position: relative;
+      overflow: hidden;
     }
 
     h2 {
-      color: #ff6699;
+      text-align: center;
+      color: #ff4d6d;
+      margin-bottom: 20px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      background: #eee;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .progress {
+      height: 12px;
+      background: linear-gradient(90deg, #ff4d6d, #ffb347);
+      width: 0%;
+      transition: 0.4s ease;
     }
 
     .question {
       display: none;
-      animation: fadeIn 0.7s ease;
+      animation: fadeSlide 0.6s ease;
     }
 
-    .question.active {
+    @keyframes fadeSlide {
+      from {opacity: 0; transform: translateX(50px);}
+      to {opacity: 1; transform: translateX(0);}
+    }
+
+    .active {
       display: block;
     }
 
@@ -41,60 +64,64 @@
       font-weight: bold;
       display: block;
       margin-bottom: 10px;
+      font-size: 16px;
     }
 
     input[type="text"], textarea, select {
       width: 100%;
-      padding: 8px;
+      padding: 10px;
       margin-top: 5px;
-      border-radius: 8px;
+      border-radius: 12px;
       border: 1px solid #ccc;
       font-size: 14px;
+      outline: none;
     }
 
     input[type="radio"] {
       margin-right: 8px;
     }
 
-    button {
-      background: #ff6699;
+    .btn {
+      background: #ff4d6d;
       border: none;
-      padding: 12px 25px;
+      padding: 12px 20px;
       border-radius: 25px;
       color: white;
-      font-size: 16px;
+      font-size: 15px;
       cursor: pointer;
-      margin-top: 15px;
+      display: inline-block;
       transition: 0.3s;
+      margin-top: 15px;
     }
 
-    button:hover {
-      background: #ff3366;
+    .btn:hover {
+      background: #e63e5d;
+      transform: scale(1.05);
     }
 
     .thanks-message {
       display: none;
-      font-size: 18px;
-      color: #333;
-      margin-top: 20px;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+      text-align: center;
+      font-size: 20px;
+      color: #444;
+      animation: fadeSlide 1s ease;
     }
   </style>
 </head>
 <body>
-  <div class="survey-box">
-    <h2>🌸 Fun Survey 🌸</h2>
+  <!-- Background Music -->
+  <audio id="bg-music" src="https://www.bensound.com/bensound-music/bensound-sweet.mp3" autoplay loop muted></audio>
+
+  <div class="app-box">
+    <h2>🎮 Fun Quiz for You 🎮</h2>
+    <div class="progress-bar"><div class="progress" id="progress"></div></div>
 
     <form id="surveyForm">
       <!-- Question 1 -->
       <div class="question active">
         <label>1. If you could travel anywhere right now, where would you go? ✈️</label>
         <input type="text" name="travel">
-        <button type="button" onclick="nextQuestion()">Next ➡️</button>
+        <button type="button" class="btn next">Next ➡️</button>
       </div>
 
       <!-- Question 2 -->
@@ -103,7 +130,7 @@
         <input type="radio" name="snack" value="Chocolate"> Chocolate  
         <input type="radio" name="snack" value="Ice Cream"> Ice Cream  
         <input type="radio" name="snack" value="Cookies"> Cookies  
-        <br><button type="button" onclick="nextQuestion()">Next ➡️</button>
+        <br><button type="button" class="btn next">Next ➡️</button>
       </div>
 
       <!-- Question 3 -->
@@ -115,47 +142,64 @@
           <option value="Romantic">Romantic</option>
           <option value="Chill">Chill</option>
         </select>
-        <br><button type="button" onclick="nextQuestion()">Next ➡️</button>
+        <button type="button" class="btn next">Next ➡️</button>
       </div>
 
       <!-- Question 4 -->
       <div class="question">
         <label>4. What's your all-time favorite movie or drama? 🎬</label>
         <input type="text" name="movie">
-        <button type="button" onclick="nextQuestion()">Next ➡️</button>
+        <button type="button" class="btn next">Next ➡️</button>
       </div>
 
       <!-- Question 5 -->
       <div class="question">
         <label>5. A random fun fact about you I might not know? 💡</label>
         <textarea name="funfact"></textarea>
-        <br><button type="submit">Submit 💌</button>
+        <button type="submit" class="btn">Submit 💌</button>
       </div>
     </form>
 
     <div class="thanks-message" id="thanksMessage">
-      💖 Thanks for answering !💖
+      🎉 Thanks for playing, Nisha! <br>
+      💖  💖
     </div>
   </div>
 
   <script>
-    let currentQuestion = 0;
+    const music = document.getElementById("bg-music");
+    const enableSound = () => {
+      music.muted = false;
+      music.play().catch(err => console.log("Autoplay blocked:", err));
+      document.removeEventListener("click", enableSound);
+      document.removeEventListener("keydown", enableSound);
+    };
+    document.addEventListener("click", enableSound);
+    document.addEventListener("keydown", enableSound);
+
+    // Questions navigation
     const questions = document.querySelectorAll(".question");
-    const form = document.getElementById("surveyForm");
-    const thanksMessage = document.getElementById("thanksMessage");
+    const nextBtns = document.querySelectorAll(".next");
+    const progress = document.getElementById("progress");
+    let current = 0;
 
-    function nextQuestion() {
-      questions[currentQuestion].classList.remove("active");
-      currentQuestion++;
-      if (currentQuestion < questions.length) {
-        questions[currentQuestion].classList.add("active");
-      }
-    }
+    nextBtns.forEach((btn, index) => {
+      btn.addEventListener("click", () => {
+        questions[index].classList.remove("active");
+        questions[index+1].classList.add("active");
+        progress.style.width = ((index+1) / questions.length) * 100 + "%";
+      });
+    });
 
-    form.addEventListener("submit", function(event) {
+    // Submit handling
+    const form = document.getElementById('surveyForm');
+    const thanksMessage = document.getElementById('thanksMessage');
+
+    form.addEventListener('submit', function(event) {
       event.preventDefault();
-      form.style.display = "none";
-      thanksMessage.style.display = "block";
+      form.style.display = 'none';
+      progress.style.width = "100%";
+      thanksMessage.style.display = 'block';
     });
   </script>
 </body>
