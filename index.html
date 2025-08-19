@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fun Survey </title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #fff3e6, #e6f7ff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .survey-box {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      max-width: 600px;
+      width: 90%;
+    }
+
+    h2 {
+      text-align: center;
+      color: #ff6699;
+    }
+
+    .question {
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"], textarea, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    input[type="radio"], input[type="checkbox"] {
+      margin-right: 8px;
+    }
+
+    button {
+      background: #ff6699;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      display: block;
+      margin: 0 auto;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #ff3366;
+    }
+
+    .thanks-message {
+      display: none;
+      text-align: center;
+      font-size: 18px;
+      color: #333;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Music -->
+  <audio id="bg-music" src="https://www.bensound.com/bensound-music/bensound-sweet.mp3" autoplay loop muted></audio>
+
+  <div class="survey-box">
+    <h2>🌸 Fun Survey 🌸</h2>
+
+    <form id="surveyForm">
+      <!-- Question 1 -->
+      <div class="question">
+        <label>1. If you could travel anywhere right now, where would you go? ✈️</label>
+        <input type="text" name="travel">
+      </div>
+
+      <!-- Question 2 -->
+      <div class="question">
+        <label>2. Which one do you like more? 🍫</label>
+        <input type="radio" name="snack" value="Chocolate"> Chocolate  
+        <input type="radio" name="snack" value="Ice Cream"> Ice Cream  
+        <input type="radio" name="snack" value="Cookies"> Cookies  
+      </div>
+
+      <!-- Question 3 -->
+      <div class="question">
+        <label>3. Which music vibe do you enjoy the most? 🎶</label>
+        <select name="music">
+          <option value="Pop">Pop</option>
+          <option value="K-Pop">K-Pop</option>
+          <option value="Romantic">Romantic</option>
+          <option value="Chill">Chill</option>
+        </select>
+      </div>
+
+      <!-- Question 4 -->
+      <div class="question">
+        <label>4. What's your all-time favorite movie or drama? 🎬</label>
+        <input type="text" name="movie">
+      </div>
+
+      <!-- Question 5 -->
+      <div class="question">
+        <label>5. A random fun fact about you I might not know? 💡</label>
+        <textarea name="funfact"></textarea>
+      </div>
+
+      <button type="submit">Submit 💌</button>
+    </form>
+
+    <div class="thanks-message" id="thanksMessage">
+      💖 Thanks for answering!
+    </div>
+  </div>
+
+  <script>
+    // Music autoplay fix for Chrome
+    const music = document.getElementById("bg-music");
+    const enableSound = () => {
+      music.muted = false;
+      music.play().catch(err => console.log("Autoplay blocked:", err));
+      document.removeEventListener("click", enableSound);
+      document.removeEventListener("keydown", enableSound);
+    };
+    document.addEventListener("click", enableSound);
+    document.addEventListener("keydown", enableSound);
+
+    // Survey submit message
+    const form = document.getElementById('surveyForm');
+    const thanksMessage = document.getElementById('thanksMessage');
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault(); // prevent refresh
+      form.style.display = 'none';
+      thanksMessage.style.display = 'block';
+    });
+  </script>
+</body>
+</html>
